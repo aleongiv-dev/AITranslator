@@ -1,0 +1,96 @@
+﻿@{
+    ViewData["Title"] = "AI Error Translator";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Translator</title>
+</head>
+<body>
+</body>
+</html>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">AI Error Translator</h1>
+        <p class="lead">Simplifying complex EDI errors using Artificial Intelligence.</p>
+        <hr class="w-25 mx-auto">
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title h5"><i class="bi bi-envelope-plus"></i> Step 1: Send your Error</h3>
+                    <p>Send an email containing your error table to our dedicated receiving address:</p>
+                    <div class="alert alert-info text-center fw-bold">
+                        5a848a5704b625fe4212@cloudmailin.net
+                    </div>
+                    <p class="small text-muted">Important: Use the table format below for the AI to parse correctly.</p>
+                    <p class="small text-muted">*********Please note that the AI takes a bit of time to generate the error due to CPU and GPU constraints in Hugging Face free tier.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-primary">
+                <div class="card-body">
+                    <h3 class="card-title h5"><i class="bi bi-cpu"></i> Step 2: AI Processing</h3>
+                    <p>Our backend uses the <strong>Gradio-hosted Error Translator Model</strong> (Powered by Google's <strong>Gemma-2-2b-it</strong>) to analyze the error code and context.</p>
+                    <ul>
+                        <li><strong>Gemma-2-2b:</strong> Optimized for high-speed, intelligent reasoning.</li>
+                        <li><strong>Context Aware:</strong> Translates technical EDI codes into plain English.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    <div class="mt-5">
+        <h3 class="h5 mb-3">Required Email Table Format</h3>
+        <div class="table-responsive">
+            <table border="1" cellpadding="5" style="border-collapse:collapse; width:100%; font-size: 0.9rem;">
+                <tr style="background-color:#3498db; color:white;">
+                    <th>Partner</th>
+                    <th>Type</th>
+                    <th>Original Error</th>
+                </tr>
+                <tr>
+                    <td>Test Partner1</td>
+                    <td>Purchase Order</td>
+                    <td>Missing Item 12345 Cross Ref setup</td>
+                </tr>
+                    <tr>
+                        <td>Test Partner2</td>
+                        <td>Invoice</td>
+                        <td>NULL:PONumber Token</td>
+                    </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-5 p-4 bg-dark text-white rounded shadow">
+        <h3 class="h5 text-warning mb-3">Sample Output (The Email You'll Receive)</h3>
+        <div class="border border-secondary p-3 rounded bg-white text-dark">
+            <p><strong>Subject:</strong> RE: Error Table Test</p>
+            <p><strong>From:</strong> AI Error Support</p>
+            <hr>
+            <p>Hello, here is the AI translation for the errors found in your email:</p>
+            <table border="1" cellpadding="5" style="border-collapse:collapse; width:100%; font-size: 0.9rem;">
+                <tr style="background-color:#3498db; color:white;">
+                    <th>Partner</th>
+                    <th>Type</th>
+                    <th>Original Error</th>
+                    <th>AI Error Translation</th>
+                </tr>
+                <tr>
+                    <td>Test Partner1</td>
+                    <td>Purchase Order</td>
+                    <td>Missing Item 12345 Cross Ref setup</td>
+                    <td style="background-color:#f0f7fb;">
+                        <strong>EXPLANATION:</strong> The system cannot find a link between your item number '12345' and the customer's part number.
+                        
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
