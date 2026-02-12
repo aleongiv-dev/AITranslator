@@ -1,28 +1,23 @@
-Readme:
+AI EDI Error Translator
 
+Web Application that transforms cryptic EDI (Electronic Data Interchange) technical errors into plain-English explanations using LLMs.
 
-The ASP.NET Web app calls a LLM API from Hugging Face which uses the model  and uses Cloudmailin as its Webhook and SMTP provider. The Web app and AI will try transform the technical errors into terms that can be understood by non technical people.
+Flow
+Input: User sends an email containing an error table to the CloudMailin address.
+Webhook: CloudMailin parses the SMTP traffic and POSTs a JSON payload to the ASP.NET Core API.
+Extraction: The app parses the EDI table and extracts the `Original Error` strings.
+AI Processing: Errors are sent to a Gemma-2-2b-it model via Hugging Face.
+Response: An HTML-formatted email is generated with an added "AI Explanation" column and sent back to the user.
 
-Integrates:
+Tech Stack
+Backend: ASP.NET Core 8.0
+AI: Hugging Face Inference API (Gemma-2-2b-it)
+Email: CloudMailin (SMTP + Webhook)
+DevOps: ngrok (Webhook Tunneling)
+Frontend: Razor Pages + Bootstrap 5 + SweetAlert2
 
-CloudMailin – for inbound email (SMTP + webhook)
-ASP.NET Core Web API – for email parsing and orchestration
-Hugging Face Space (LLM API) – for AI error explanation
-ngrok – for exposing the local webhook endpoint (development)
-
-
-Flow:
-	-User will send an error email to 5a848a5704b625fe4212@cloudmailin.net
-	-Cloudmailin will forward it to https://unfunded-garry-dignifiedly.ngrok-free.dev/api/webhooks/cloudmailin
-	-The Web App:
-		Receives the email JSON payload
-		Extracts the email body (plain text or HTML)
-		Parses lines containing:
-		ERROR
-	-Each detected error message is sent to the Hugging Face LLM API.
-	-The LLM returns a plain-English explanation.
-	-The Web App:
-		Generates a response email
-		Adds a new section called “AI Explanation”
-		Sends the email back to the original sender
+Version History
+02/12/2025: - Integrated SweetAlert2 for frontend notifications.
+  - Added Live Sample Tool: Users can now test the AI directly from the web UI using a dropdown list or custom text input.
+  - Implemented full-screen loading states for AI processing.
 
