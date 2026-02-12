@@ -35,35 +35,36 @@ public class AITranslatorService
         
             string statusEndpoint = $"https://aleongiv-error-translator-space.hf.space/gradio_api/call/explain_error/{eventId}";
 
-            // Keeps the connection open
+            // connection open
             using var request = new HttpRequestMessage(HttpMethod.Get, statusEndpoint);
             using var statusResponse = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             using var stream = await statusResponse.Content.ReadAsStreamAsync();
             using var reader = new System.IO.StreamReader(stream);
 
-            // Read the stream line by line until we find the 'complete' event or data
+            // Read the stream line by line until 'complete'
             while (!reader.EndOfStream)
             {
                 var line = await reader.ReadLineAsync();
                 if (string.IsNullOrWhiteSpace(line)) continue;
 
-                _logger.LogInformation("Gradio Stream: {Line}", line);
-
                 if (line.StartsWith("data:"))
                 {
                     var json = line.Substring(5).Trim();
-                    // Gradio sends several messages (heartbeats, progress). 
-                    
                     try
                     {
                         using var doc = JsonDocument.Parse(json);
+                        // Gradio "call" API sends the result in an array under the 'data' or root property
                         if (doc.RootElement.ValueKind == JsonValueKind.Array)
                         {
                             var result = doc.RootElement[0].GetString();
-                            if (!string.IsNullOrEmpty(result)) return result;
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                _logger.LogInformation("AI Result received, closing stream.");
+                                return result; 
+                            }
                         }
                     }
-                    catch { }
+                    catch {  }
                 }
             }
 
@@ -77,7 +78,7 @@ public class AITranslatorService
     }
     private string ExtractGradioData(string sseResponse)
     {
-        // Gradio returns a stream. We look for the 'data:' line in the response.
+
         var lines = sseResponse.Split('\n');
         foreach (var line in lines)
         {

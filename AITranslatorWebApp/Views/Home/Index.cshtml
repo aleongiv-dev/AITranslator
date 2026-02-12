@@ -1,14 +1,62 @@
-﻿@{
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
     ViewData["Title"] = "AI Error Translator";
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <title>AI Translator</title>
-</head>
-<body>
-</body>
-</html>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    #loadingOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 9999;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .loader-text {
+        color: #0d6efd;
+        font-weight: bold;
+        margin-top: 15px;
+        font-size: 1.5rem;
+    }
+
+    .toggle-container {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #dee2e6;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div id="loadingOverlay">
+    <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status"></div>
+    <div class="loader-text">AI is thinking...</div>
+    <p class="text-muted">Analyzing Error with Gemma-2 (Hugging Face tier)</p>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <script>
+        Swal.fire({ icon: 'success', title: 'Success!', text: '@TempData["Success"]', confirmButtonColor: '#0d6efd' });
+    </script>
+}
+
+@if (TempData["Error"] != null)
+{
+    <script>
+        Swal.fire({ icon: 'error', title: 'Error', text: '@TempData["Error"]', confirmButtonColor: '#dc3545' });
+    </script>
+}
+
 <div class="container py-5">
     <div class="text-center mb-5">
         <h1 class="display-4 fw-bold text-primary">AI Error Translator</h1>
@@ -18,79 +66,173 @@
 
     <div class="row g-4">
         <div class="col-md-6">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm border-0 bg-light">
                 <div class="card-body">
-                    <h3 class="card-title h5"><i class="bi bi-envelope-plus"></i> Step 1: Send your Error</h3>
+                    <h3 class="card-title h5 text-primary">
+                        <i class="bi bi-envelope-plus"></i> Step 1: Send your Error
+                    </h3>
                     <p>Send an email containing your error table to our dedicated receiving address:</p>
-                    <div class="alert alert-info text-center fw-bold">
-                        5a848a5704b625fe4212@cloudmailin.net
+                    <div class="alert alert-info text-center fw-bold border-info shadow-sm">
+                        5a848a5704b625fe4212@@cloudmailin.net
                     </div>
-                    <p class="small text-muted">Important: Use the table format below for the AI to parse correctly.</p>
-                    <p class="small text-muted">*********Please note that the AI takes a bit of time to generate the error due to CPU and GPU constraints in Hugging Face free tier.</p>
+                    <p class="small text-muted italic">
+                        *AI generates translations based on the provided table context.
+                    </p>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6">
-            <div class="card h-100 shadow-sm border-primary">
+            <div class="card h-100 shadow-sm border-primary border-2">
                 <div class="card-body">
-                    <h3 class="card-title h5"><i class="bi bi-cpu"></i> Step 2: AI Processing</h3>
-                    <p>Our backend uses the <strong>Gradio-hosted Error Translator Model</strong> (Powered by Google's <strong>Gemma-2-2b-it</strong>) to analyze the error code and context.</p>
-                    <ul>
-                        <li><strong>Gemma-2-2b:</strong> Optimized for high-speed, intelligent reasoning.</li>
-                        <li><strong>Context Aware:</strong> Translates technical EDI codes into plain English.</li>
+                    <h3 class="card-title h5">
+                        <i class="bi bi-cpu-fill"></i> Step 2: AI Processing
+                    </h3>
+                    <p>Powered by Google's <strong>Gemma-2-2b-it</strong>.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-check-circle text-success"></i> High-speed reasoning.</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Plain English translations.</li>
                     </ul>
                 </div>
             </div>
         </div>
+    </div>
 
     <div class="mt-5">
-        <h3 class="h5 mb-3">Required Email Table Format</h3>
-        <div class="table-responsive">
-            <table border="1" cellpadding="5" style="border-collapse:collapse; width:100%; font-size: 0.9rem;">
-                <tr style="background-color:#3498db; color:white;">
-                    <th>Partner</th>
-                    <th>Type</th>
-                    <th>Original Error</th>
-                </tr>
-                <tr>
-                    <td>Test Partner1</td>
-                    <td>Purchase Order</td>
-                    <td>Missing Item 12345 Cross Ref setup</td>
-                </tr>
-                    <tr>
-                        <td>Test Partner2</td>
-                        <td>Invoice</td>
-                        <td>NULL:PONumber Token</td>
-                    </tr>
+        <h3 class="h5 mb-3"><i class="bi bi-table"></i> Required Email Table Format</h3>
+        <div class="table-responsive shadow-sm">
+            <table class="table table-bordered mb-0" style="font-size: 0.9rem;">
+                <thead style="background-color:#3498db; color:white;">
+                    <tr><th>Partner</th><th>Type</th><th>Original Error</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Test Partner1</td><td>Purchase Order</td><td>Missing Item 12345 Cross Ref setup</td></tr>
+                </tbody>
             </table>
         </div>
     </div>
 
     <div class="mt-5 p-4 bg-dark text-white rounded shadow">
-        <h3 class="h5 text-warning mb-3">Sample Output (The Email You'll Receive)</h3>
+        <h3 class="h5 text-warning mb-3"><i class="bi bi-envelope-check"></i> Sample Output</h3>
         <div class="border border-secondary p-3 rounded bg-white text-dark">
-            <p><strong>Subject:</strong> RE: Error Table Test</p>
-            <p><strong>From:</strong> AI Error Support</p>
             <hr>
-            <p>Hello, here is the AI translation for the errors found in your email:</p>
-            <table border="1" cellpadding="5" style="border-collapse:collapse; width:100%; font-size: 0.9rem;">
-                <tr style="background-color:#3498db; color:white;">
-                    <th>Partner</th>
-                    <th>Type</th>
-                    <th>Original Error</th>
-                    <th>AI Error Translation</th>
-                </tr>
-                <tr>
-                    <td>Test Partner1</td>
-                    <td>Purchase Order</td>
-                    <td>Missing Item 12345 Cross Ref setup</td>
-                    <td style="background-color:#f0f7fb;">
-                        <strong>EXPLANATION:</strong> The system cannot find a link between your item number '12345' and the customer's part number.
-                        
-                    </td>
-                </tr>
+            <table class="table table-bordered" style="font-size: 0.85rem;">
+                <thead style="background-color:#3498db; color:white;">
+                    <tr><th>Partner</th><th>Type</th><th>Original Error</th><th>AI Error Translation</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Test Partner1</td>
+                        <td>Purchase Order</td>
+                        <td>Missing Item 12345...</td>
+                        <td style="background-color:#f0f7fb;"><strong>EXPLANATION:</strong> The system cannot find a link between your item number '12345' and the customer's part number.</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
+
+    <div class="mt-5 p-4 border rounded shadow-sm bg-white">
+        <h3 class="h5 mb-4 text-primary fw-bold text-center">Try a Live AI Sample</h3>
+
+        <form id="sampleForm" method="post" asp-controller="Home" asp-action="SendSample">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+
+                    <div class="mb-4">
+                        <label for="email" class="form-label fw-bold">Your Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input type="email" name="email" class="form-control" id="email" placeholder="you@example.com" required />
+                        </div>
+                    </div>
+
+                    <div class="toggle-container">
+                        <label class="form-label fw-bold d-block text-center mb-3">Input Method</label>
+                        <div class="d-flex justify-content-center gap-4">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inputType" id="modeSample" value="sample" checked>
+                                <label class="form-check-label" for="modeSample">Pre-defined Sample</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inputType" id="modeCustom" value="custom">
+                                <label class="form-check-label" for="modeCustom">Custom Error Message</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sampleInputDiv" class="mb-4">
+                        <label for="sampleError" class="form-label fw-bold">Select Sample Error</label>
+                        <select name="sampleError" class="form-select shadow-sm" id="sampleError" required>
+                            <option value="" selected disabled>Choose Sample Error</option>
+                            <option value="TP ID &quot;TEST_TRADEPARTNER&quot; Not found">TP ID "TEST_TRADEPARTNER" Not found</option>
+                            <option value="Duplicate Purchase Order">Duplicate Purchase Order</option>
+                            <option value="UNKNOWN Record MSG Segment">UNKNOWN Record MSG Segment</option>
+                        </select>
+                    </div>
+
+                    <div id="customInputDiv" class="mb-4 d-none">
+                        <label for="customError" class="form-label fw-bold">Type Your Custom Error</label>
+                        <textarea name="customError" class="form-control shadow-sm" id="customError" rows="3" placeholder="Paste your EDI error here..." disabled></textarea>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm" id="btnSubmit">
+                            <span id="btnText">Send Sample Email</span>
+                            <span id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('sampleForm');
+        const overlay = document.getElementById('loadingOverlay');
+        const btn = document.getElementById('btnSubmit');
+
+        const modeSample = document.getElementById('modeSample');
+        const modeCustom = document.getElementById('modeCustom');
+        const sampleDiv = document.getElementById('sampleInputDiv');
+        const customDiv = document.getElementById('customInputDiv');
+        const sampleSelect = document.getElementById('sampleError');
+        const customText = document.getElementById('customError');
+
+        function updateFormMode() {
+            if (modeCustom.checked) {
+                sampleDiv.classList.add('d-none');
+                customDiv.classList.remove('d-none');
+
+                sampleSelect.disabled = true;
+                sampleSelect.required = false;
+
+                customText.disabled = false;
+                customText.required = true;
+            } else {
+                sampleDiv.classList.remove('d-none');
+                customDiv.classList.add('d-none');
+
+                sampleSelect.disabled = false;
+                sampleSelect.required = true;
+
+                customText.disabled = true;
+                customText.required = false;
+            }
+        }
+
+        modeSample.addEventListener('change', updateFormMode);
+        modeCustom.addEventListener('change', updateFormMode);
+
+        if (form) {
+            form.addEventListener('submit', function() {
+                overlay.style.display = 'flex';
+                btn.disabled = true;
+                document.getElementById('btnText').innerText = "AI is thinking...";
+                document.getElementById('btnSpinner').classList.remove('d-none');
+            });
+        }
+    });
+</script>
