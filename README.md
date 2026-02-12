@@ -1,3 +1,5 @@
+ACCESS SITE AT: https://aierrortranslator-c6bkcehmg8fccbhh.canadacentral-01.azurewebsites.net
+
 AI EDI Error Translator
 
 Web Application that transforms cryptic EDI (Electronic Data Interchange) technical errors into plain-English explanations using LLMs.
